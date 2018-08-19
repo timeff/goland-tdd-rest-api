@@ -8,16 +8,18 @@ import (
 )
 
 type GormTodoRepo struct {
-	Conn *gorm.DB
+	conn *gorm.DB
 }
 
 func NewGormRepo(Conn *gorm.DB) todo.Repository {
-	return &GormTodoRepo{Conn}
+	return &GormTodoRepo{
+		conn: Conn,
+	}
 }
 
 func (g *GormTodoRepo) Get() ([]*todo.Todo, error) {
 	allTodo := []*todo.Todo{}
-	err := g.Conn.Find(&allTodo).Error
+	err := g.conn.Find(&allTodo).Error
 
 	if err == sql.ErrNoRows {
 		return allTodo, nil
@@ -29,8 +31,24 @@ func (g *GormTodoRepo) Get() ([]*todo.Todo, error) {
 	return allTodo, nil
 }
 
+func (g *GormTodoRepo) GetByID(id int64) (*todo.Todo, error) {
+	mockTodo := todo.Todo{
+		ID: id,
+	}
+
+	err := g.conn.First(&mockTodo).Error
+	if err == sql.ErrNoRows {
+		return nil, todo.NOT_FOUND_ERROR
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &mockTodo, nil
+}
+
 func (g *GormTodoRepo) Create(t *todo.Todo) (int64, error) {
-	db := g.Conn.Create(t)
+	db := g.conn.Create(t)
 	if err := db.Error; err != nil {
 		return 0, err
 	}
@@ -41,7 +59,7 @@ func (g *GormTodoRepo) Create(t *todo.Todo) (int64, error) {
 }
 
 func (g *GormTodoRepo) Update(t *todo.Todo) error {
-	err := g.Conn.Save(t).Error
+	err := g.conn.Save(t).Error
 	if err != nil {
 		return err
 	}
@@ -54,7 +72,7 @@ func (g *GormTodoRepo) Delete(id int64) error {
 		ID: id,
 	}
 
-	err := g.Conn.Delete(&mockTodo).Error
+	err := g.conn.Delete(&mockTodo).Error
 	if err != nil {
 		return err
 	}

@@ -100,6 +100,38 @@ func TestGetTodo(t *testing.T) {
 	assert.Len(t, todos, len(mockTodos))
 }
 
+func TestGetTodoByID(t *testing.T) {
+	db, mock := setUpDB()
+	defer db.Close()
+
+	id := int64(1)
+
+	mockTodos := []todo.Todo{
+		todo.Todo{
+			ID:      int64(1),
+			Content: "Test1",
+			Done:    false,
+		},
+	}
+
+	expectedRow := createRowsForTodo(mockTodos)
+
+	req := fixedFullRe("SELECT * FROM `todos` WHERE `todos`.`deleted_at` IS NULL AND `todos`.`id` = ? ORDER BY `todos`.`id` ASC LIMIT 1")
+	args := []driver.Value{
+		id,
+	}
+
+	mock.ExpectQuery(req).
+		WithArgs(args...).
+		WillReturnRows(expectedRow)
+
+	repo := NewGormRepo(db)
+	todo, err := repo.GetByID(id)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, todo)
+}
+
 func TestCreateNewTodo(t *testing.T) {
 	db, mock := setUpDB()
 	defer db.Close()

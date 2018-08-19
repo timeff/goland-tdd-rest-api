@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"errors"
 	"time"
 )
 
@@ -12,3 +13,7 @@ type Todo struct {
 	UpdatedAt time.Time `json:"updated_at"`
 	DeletedAt time.Time `json:"deleted_at"`
 }
+
+var (
+	NOT_FOUND_ERROR = errors.New("No todo for given ID")
+)
