@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetTodoAndReturnZero(t *testing.T) {
+func TestGetTodoAndReturnEmpty(t *testing.T) {
 	mockTodoRepo := mocks.MockTodoRepo{}
 	mockTodoEmpty := []*todo.Todo{}
 
