@@ -16,4 +16,5 @@ type Todo struct {
 
 var (
 	NOT_FOUND_ERROR = errors.New("No todo for given ID")
+	WRONG_PARAMS    = errors.New("Wrong params")
 )

@@ -29,6 +29,8 @@ func createEchoContext(t *testing.T,
 
 	rec := httptest.NewRecorder()
 
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+
 	return e.NewContext(req, rec), rec
 }
 
@@ -52,6 +54,32 @@ func TestGetTodoAndReturnEmpty(t *testing.T) {
 	mockTodoController.AssertExpectations(t)
 }
 
+func TestGetTodo(t *testing.T) {
+	mockTodoController := mocks.MockTodoController{}
+	mockTodo := []*todo.Todo{
+		&todo.Todo{
+			ID:      1,
+			Content: "Test1",
+			Done:    false,
+		},
+	}
+	mockTodoController.On("Get").Return(mockTodo, nil)
+
+	expectedJSON, _ := json.Marshal(mockTodo)
+	expectedJSONString := string(expectedJSON)
+
+	c, rec := createEchoContext(t, echo.GET, "/todo", nil)
+
+	handler := HTTPTodoHandler{
+		todoController: &mockTodoController,
+	}
+	handler.Get(c)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Equal(t, expectedJSONString, rec.Body.String())
+	mockTodoController.AssertExpectations(t)
+}
+
 func TestCreateTodo(t *testing.T) {
 	mockTodoController := mocks.MockTodoController{}
 	mockID := int64(1)
@@ -60,7 +88,7 @@ func TestCreateTodo(t *testing.T) {
 		Content: "Test1",
 		Done:    false,
 	}
-	mockTodoController.On("Create").Return(mockID, nil)
+	mockTodoController.On("Create", &mockTodo).Return(mockID, nil)
 
 	requestData, err := json.Marshal(&mockTodo)
 	assert.NoError(t, err)
@@ -91,12 +119,12 @@ func TestUpdateTodo(t *testing.T) {
 		Content: "Test1",
 		Done:    false,
 	}
-	mockTodoController.On("Update").Return(nil)
+	mockTodoController.On("Update", &mockTodo).Return(nil)
 
 	requestData, err := json.Marshal(&mockTodo)
 	assert.NoError(t, err)
 
-	c, rec := createEchoContext(t, echo.PUT, "/todo/"+strconv.Itoa(int(mockID)), strings.NewReader(string(requestData)))
+	c, rec := createEchoContext(t, echo.PUT, "/todo/", strings.NewReader(string(requestData)))
 
 	handler := HTTPTodoHandler{
 		todoController: &mockTodoController,
@@ -110,9 +138,13 @@ func TestUpdateTodo(t *testing.T) {
 func TestDeleteTodo(t *testing.T) {
 	mockTodoController := mocks.MockTodoController{}
 	mockID := int64(1)
-	mockTodoController.On("Delete").Return(nil)
+	mockIDString := strconv.Itoa(int(mockID))
+	mockTodoController.On("Delete", mockID).Return(nil)
 
-	c, rec := createEchoContext(t, echo.DELETE, "/todo/"+strconv.Itoa(int(mockID)), nil)
+	c, rec := createEchoContext(t, echo.DELETE, "/todo/"+mockIDString, nil)
+	c.SetPath("todo/:id")
+	c.SetParamNames("id")
+	c.SetParamValues(mockIDString)
 
 	handler := HTTPTodoHandler{
 		todoController: &mockTodoController,

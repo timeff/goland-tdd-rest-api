@@ -21,6 +21,10 @@ func getErrorResponse(err error) (httpStatus int, res ResponseError) {
 		httpStatus = http.StatusBadRequest
 		res.Error.Code = "E001"
 		res.Error.Message = "No todo list"
+	case todo.WRONG_PARAMS:
+		httpStatus = http.StatusBadRequest
+		res.Error.Code = "E002"
+		res.Error.Message = "Wrong params"
 	default:
 		httpStatus = http.StatusInternalServerError
 		res.Error.Code = "E999"
