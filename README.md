@@ -8,3 +8,5 @@ TODO:
  - Resilient Pattern
  - Better Error
  - Timeout context
+ - Dockerize
+ - More test case (TDD)
