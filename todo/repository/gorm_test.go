@@ -65,7 +65,7 @@ func TestGetTodoAndReturnZero(t *testing.T) {
 	db, mock := setUpDB()
 	defer db.Close()
 
-	mock.ExpectQuery(fixedFullRe("SELECT * FROM todo;")).
+	mock.ExpectQuery(fixedFullRe("SELECT * FROM `todos` WHERE `todos`.`deleted_at` IS NULL")).
 		WillReturnError(sql.ErrNoRows)
 
 	repo := NewGormRepo(db)
@@ -90,7 +90,7 @@ func TestGetTodo(t *testing.T) {
 
 	expectedRow := createRowsForTodo(mockTodos)
 
-	mock.ExpectQuery(fixedFullRe("SELECT * FROM todo;")).
+	mock.ExpectQuery(fixedFullRe("SELECT * FROM `todos` WHERE `todos`.`deleted_at` IS NULL")).
 		WillReturnRows(expectedRow)
 
 	repo := NewGormRepo(db)
@@ -113,17 +113,7 @@ func TestCreateNewTodo(t *testing.T) {
 		Done:    done,
 	}
 
-	req := fixedFullRe(`
-	INSERT INTO "todo" 
-		(
-			"content",
-			"done",
-			"created_at",
-			"updated_at",
-			"deleted_at"
-		) 
-	VALUES 
-		(?,?,?,?,?);`)
+	req := fixedFullRe("INSERT INTO `todos` (`content`,`done`,`created_at`,`updated_at`,`deleted_at`) VALUES (?,?,?,?,?)")
 
 	args := []driver.Value{
 		content,
@@ -158,17 +148,7 @@ func TestUpdateTodo(t *testing.T) {
 		Done:    done,
 	}
 
-	req := fixedFullRe(`
-	UPDATE 
-		"todo" 
-	SET 
-		"content" = ?, 
-		"done" = ?,
-		"created_at" = ?,
-		"updated_at" = ?,
-		"deleted_at" = ?
-	WHERE 
-		"id" = ?;`)
+	req := fixedFullRe("UPDATE `todos` SET `content` = ?, `done` = ?, `created_at` = ?, `updated_at` = ?, `deleted_at` = ? WHERE `todos`.`deleted_at` IS NULL AND `todos`.`id` = ?")
 	args := []driver.Value{
 		content,
 		done,
@@ -183,10 +163,9 @@ func TestUpdateTodo(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(id, 1))
 
 	repo := NewGormRepo(db)
-	todoID, err := repo.Update(&updateTodo)
+	err := repo.Update(&updateTodo)
 
 	assert.NoError(t, err)
-	assert.Equal(t, id, todoID)
 }
 
 func TestDeleteTodo(t *testing.T) {
@@ -195,12 +174,9 @@ func TestDeleteTodo(t *testing.T) {
 
 	id := int64(1)
 
-	req := fixedFullRe(`
-	DELETE FROM
-		"todo" 
-	WHERE 
-		"id" = ?;`)
+	req := fixedFullRe("UPDATE `todos` SET `deleted_at`=? WHERE `todos`.`deleted_at` IS NULL AND `todos`.`id` = ?")
 	args := []driver.Value{
+		sqlmock.AnyArg(),
 		id,
 	}
 
