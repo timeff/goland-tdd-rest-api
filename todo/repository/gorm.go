@@ -59,7 +59,11 @@ func (g *GormTodoRepo) Create(t *todo.Todo) (int64, error) {
 }
 
 func (g *GormTodoRepo) Update(t *todo.Todo) error {
-	err := g.conn.Save(t).Error
+	err := g.conn.Model(t).Update(map[string]interface{}{
+		"content": t.Content,
+		"done":    t.Done,
+	}).Error
+
 	if err != nil {
 		return err
 	}

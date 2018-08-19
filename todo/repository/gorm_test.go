@@ -180,12 +180,10 @@ func TestUpdateTodo(t *testing.T) {
 		Done:    done,
 	}
 
-	req := fixedFullRe("UPDATE `todos` SET `content` = ?, `done` = ?, `created_at` = ?, `updated_at` = ?, `deleted_at` = ? WHERE `todos`.`deleted_at` IS NULL AND `todos`.`id` = ?")
+	req := fixedFullRe("UPDATE `todos` SET `content` = ?, `done` = ?, `updated_at` = ? WHERE `todos`.`deleted_at` IS NULL AND `todos`.`id` = ?")
 	args := []driver.Value{
 		content,
 		done,
-		sqlmock.AnyArg(),
-		sqlmock.AnyArg(),
 		sqlmock.AnyArg(),
 		id,
 	}

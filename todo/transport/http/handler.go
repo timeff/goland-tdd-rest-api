@@ -71,7 +71,7 @@ func (h *HTTPTodoHandler) Update(c echo.Context) error {
 		return c.JSON(errorHTTPCode, errorReponse)
 	}
 
-	return c.JSON(http.StatusOK, nil)
+	return c.NoContent(http.StatusOK)
 }
 
 func (h *HTTPTodoHandler) Delete(c echo.Context) error {
@@ -94,5 +94,5 @@ func (h *HTTPTodoHandler) Delete(c echo.Context) error {
 		return c.JSON(errorHTTPCode, errorReponse)
 	}
 
-	return c.JSON(http.StatusOK, nil)
+	return c.NoContent(http.StatusOK)
 }
