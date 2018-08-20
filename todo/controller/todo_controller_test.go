@@ -13,7 +13,7 @@ func TestGetTodoAndReturnEmpty(t *testing.T) {
 	mockTodoEmpty := []*todo.Todo{}
 
 	mockTodoRepo.On("Get").Return(mockTodoEmpty, nil)
-	controller := NewTodoController(&mockTodoRepo)
+	controller := NewController(&mockTodoRepo)
 
 	todos, err := controller.Get()
 	assert.Nil(t, err)
@@ -33,7 +33,7 @@ func TestGetTodo(t *testing.T) {
 
 	mockTodoRepo.On("Get").Return(mockTodo, nil)
 
-	controller := NewTodoController(&mockTodoRepo)
+	controller := NewController(&mockTodoRepo)
 
 	todos, err := controller.Get()
 	assert.Nil(t, err)
@@ -53,7 +53,7 @@ func TestCreateTodo(t *testing.T) {
 
 	mockTodoRepo.On("Create", &mockTodo).Return(mockID, nil)
 
-	controller := NewTodoController(&mockTodoRepo)
+	controller := NewController(&mockTodoRepo)
 
 	todoID, err := controller.Create(&mockTodo)
 	assert.Nil(t, err)
@@ -72,7 +72,7 @@ func TestUpdateTodo(t *testing.T) {
 	mockTodoRepo.On("GetByID", mockID).Return(&mockTodo, nil)
 	mockTodoRepo.On("Update", &mockTodo).Return(nil)
 
-	controller := NewTodoController(&mockTodoRepo)
+	controller := NewController(&mockTodoRepo)
 
 	err := controller.Update(&mockTodo)
 	assert.Nil(t, err)
@@ -90,7 +90,7 @@ func TestUpdateToWrongID(t *testing.T) {
 
 	mockTodoRepo.On("GetByID", mockID).Return(nil, expectedError)
 
-	controller := NewTodoController(&mockTodoRepo)
+	controller := NewController(&mockTodoRepo)
 
 	err := controller.Update(&mockTodo)
 	assert.Equal(t, expectedError, err)
@@ -102,7 +102,7 @@ func TestDeleteTodo(t *testing.T) {
 
 	mockTodoRepo.On("Delete", mockID).Return(nil)
 
-	controller := NewTodoController(&mockTodoRepo)
+	controller := NewController(&mockTodoRepo)
 
 	err := controller.Delete(mockID)
 	assert.Nil(t, err)

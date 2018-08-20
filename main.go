@@ -28,8 +28,8 @@ func main() {
 	}
 
 	todoRepo := todoRepo.NewGormRepo(gormTodo)
-	todoController := todoController.NewTodoController(todoRepo)
-	todoHTTPTransport.NewHTTPTodoHandler(e, todoController)
+	todoController := todoController.NewController(todoRepo)
+	todoHTTPTransport.NewHandler(e, todoController)
 
 	port := os.Getenv("WEB_PORT")
 	if port == "" {

@@ -8,7 +8,7 @@ type TodoController struct {
 	todoRepo todo.Repository
 }
 
-func NewTodoController(todoRepo todo.Repository) todo.Controller {
+func NewController(todoRepo todo.Repository) todo.Controller {
 	return &TodoController{
 		todoRepo: todoRepo,
 	}

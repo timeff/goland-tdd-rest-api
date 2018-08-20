@@ -12,7 +12,7 @@ type HTTPTodoHandler struct {
 	todoController todo.Controller
 }
 
-func NewHTTPTodoHandler(e *echo.Echo, todoController todo.Controller) {
+func NewHandler(e *echo.Echo, todoController todo.Controller) {
 	handler := &HTTPTodoHandler{
 		todoController,
 	}
