@@ -115,7 +115,6 @@ func TestGetTodoByID(t *testing.T) {
 	}
 
 	expectedRow := createRowsForTodo(mockTodos)
-
 	req := fixedFullRe("SELECT * FROM `todos` WHERE `todos`.`deleted_at` IS NULL AND `todos`.`id` = ? ORDER BY `todos`.`id` ASC LIMIT 1")
 	args := []driver.Value{
 		id,

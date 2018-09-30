@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	"github.com/facebookgo/grace/gracehttp"
 	"github.com/labstack/echo"
 
 	todoController "golang-tdd-rest-api/todo/controller"
@@ -13,13 +14,11 @@ import (
 	todoHTTPTransport "golang-tdd-rest-api/todo/transport/http"
 )
 
-func init() {
+func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("unable to read .env file")
 	}
-}
 
-func main() {
 	e := echo.New()
 
 	gormTodo, err := database.GetGormTodo()
@@ -35,6 +34,8 @@ func main() {
 	if port == "" {
 		port = "8080"
 	}
+	e.Server.Addr = ":"+port
 
-	log.Fatal(e.Start(":" + port))
+	log.Fatal(gracehttp.Serve(e.Server))
+
 }
