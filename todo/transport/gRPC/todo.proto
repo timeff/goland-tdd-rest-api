@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+
+package gRPC;
+
+import "google/protobuf/timestamp.proto";
+
+
+service Todo {
+    rpc Get (TodosRequest) returns (TodosReply) {}
+}
+
+message TodosRequest{}
+
+
+message TodosReply {
+    repeated TodoReply Todo=1;
+}
+
+message TodoReply {
+    int64 ID = 1;
+    string Content = 2;
+    bool Done = 3;
+    google.protobuf.Timestamp CreatedAt = 4;
+    google.protobuf.Timestamp UpdatedAt = 5;
+    google.protobuf.Timestamp DeletedAt = 6;
+}

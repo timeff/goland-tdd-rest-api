@@ -2,7 +2,6 @@ package controller
 
 import (
 	"golang-tdd-rest-api/todo"
-	"time"
 )
 
 type TodoController struct {
@@ -13,10 +12,11 @@ func NewController(todoRepo todo.Repository) todo.Controller {
 	return &TodoController{
 		todoRepo: todoRepo,
 	}
+
 }
 
 func (c *TodoController) Get() ([]*todo.Todo, error) {
-	time.Sleep(3 * time.Second)
+	// time.Sleep(3 * time.Second)
 
 	todos, err := c.todoRepo.Get()
 	if err != nil {
