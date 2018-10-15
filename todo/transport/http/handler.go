@@ -16,8 +16,21 @@ func NewHandler(e *echo.Echo, todoController todo.Controller) {
 	handler := &HTTPTodoHandler{
 		todoController,
 	}
-
+	// swagger:route GET /todo todo Get
+	//
+	// Lists all todo.
+	//
+	// This will show all available todo.
+	//
+	//     Produces:
+	//     - application/json
+	//
+	//     Schemes: http
+	//
+	//     Responses:
+	//       200: todo
 	e.GET("/todo", handler.Get)
+
 	e.POST("/todo", handler.Create)
 	e.PUT("/todo", handler.Update)
 	e.DELETE("/todo/:id", handler.Delete)

@@ -1,0 +1,59 @@
+{
+  "swagger": "2.0",
+  "info": {},
+  "paths": {
+    "/todo": {
+      "get": {
+        "description": "This will show all available todo.",
+        "produces": [
+          "application/json"
+        ],
+        "schemes": [
+          "http"
+        ],
+        "tags": [
+          "todo"
+        ],
+        "summary": "Lists all todo.",
+        "operationId": "Get",
+        "responses": {
+          "200": {
+            "$ref": "#/responses/todo"
+          }
+        }
+      }
+    }
+  },
+  "responses": {
+    "todo": {
+      "description": "A todo is list of todo\n{ duide:dude}",
+      "headers": {
+        "ID": {
+          "uniqueItems": true,
+          "type": "integer",
+          "format": "int64",
+          "description": "the id for this todo"
+        },
+        "content": {
+          "type": "string",
+          "description": "the content for this todo"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deleted_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "done": {
+          "type": "boolean"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

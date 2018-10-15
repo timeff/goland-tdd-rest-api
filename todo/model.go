@@ -5,8 +5,14 @@ import (
 	"time"
 )
 
+// A todo is list of todo
+// swagger:response todo
 type Todo struct {
-	ID        int64      `json:"id`
+	// the id for this todo
+	//
+	// unique: true
+	ID int64 `json:"id`
+	// the content for this todo
 	Content   string     `json:"content"`
 	Done      bool       `json:"done"`
 	CreatedAt *time.Time `json:"created_at"`
