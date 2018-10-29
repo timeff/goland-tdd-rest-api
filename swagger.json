@@ -26,7 +26,7 @@
   },
   "responses": {
     "todo": {
-      "description": "A todo is list of todo\n{ duide:dude}",
+      "description": "A todo is list of todo",
       "headers": {
         "ID": {
           "uniqueItems": true,
